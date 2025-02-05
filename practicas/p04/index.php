@@ -80,11 +80,11 @@
         echo "<br>";
         $b = "5a version de PHP";
         echo "Tercer valor: $b <br>";
-        $c = $b*10;
+        @$c = $b*10;
         echo "Cuarto valor: $c <br>";
         $a .= $b;
         echo "Quinto valor: $a <br>";
-        $b *= $c;
+        @$b *= $c;
         echo "Sexto valor: $b <br>";
         $z[0] = "MySQL";
         echo "Séptimo valor: , ";
