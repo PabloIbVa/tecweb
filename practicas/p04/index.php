@@ -62,6 +62,7 @@
         //d) Describe en y muestra en la página obtenida qué ocurrió en el segundo bloque de asignaciones
         echo "<p> Respuesta: </p>";
         echo "En el segundo bloque se escribe php server dado a que b y c son apuntadores de a y todos estos apuntan a un solo valor (php server)";
+        unset($a, $b, $c);
     ?>
     <h2>Ejercicio 3</h2>
     <p>Muestra el contenido de cada variable inmediatamente después de cada asignación,
@@ -75,6 +76,7 @@
         $z[] = &$a;
         echo "Segundo valor: ";
         print_r($z);
+        unset($z);
         echo "<br>";
         $b = "5a version de PHP";
         echo "Tercer valor: $b <br>";
@@ -87,6 +89,27 @@
         $z[0] = "MySQL";
         echo "Séptimo valor: , ";
         print_r($z);
+    ?>
+    <h2>Ejercicio 4</h2>
+    <p>
+        Lee y muestra los valores de las variables del ejercicio anterior, pero ahora con la ayuda de
+        la matriz $GLOBALS o del modificador global de PHP.
+    </p>
+    <?php
+        //AQUI VA MI CÓDIGO PHP 
+        var_dump($GLOBALS['a']);
+        echo "<br>";
+        
+        var_dump($GLOBALS['b']);
+        echo "<br>";
+        
+        var_dump($GLOBALS['c']);
+        echo "<br>";
+        
+        print_r($GLOBALS['z']);
+        echo "<br>";
+
+        unset($a, $b, $c, $z);
     ?>
 </body>
 </html>
