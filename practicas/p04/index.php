@@ -127,6 +127,38 @@
         echo "Valor de c: $c <br>";
         unset($a, $b, $c);
     ?>
-    
+    <h2>Ejercicio 6</h2>
+    <p>
+        Dar y comprobar el valor booleano de las variables $a, $b, $c, $d, $e y $f y muéstralas
+        usando la función var_dump(datos).
+        Después investiga una función de PHP que permita transformar el valor booleano de $c y $e
+        en uno que se pueda mostrar con un echo:
+    </p>
+    <?php
+        //AQUI VA MI CÓDIGO PHP 
+        $a = "0";
+        $b = "TRUE";
+        $c = FALSE;
+        $d = ($a OR $b);
+        $e = ($a AND $c);
+        $f = ($a XOR $b);
+        echo '<p>Mostramos datos:</p>';
+        var_dump($a);
+        echo "<br>";
+        var_dump($b);
+        echo "<br>";
+        var_dump($c);
+        echo "<br>";
+        var_dump($d);
+        echo "<br>";
+        var_dump($e);
+        echo "<br>";
+        var_dump($f);
+        echo "<br>";
+
+        echo '<p>Mostramos datos c) y e) con echo:</p>';
+        echo "valor de c: " . var_export($c, true) . "<br>";
+        echo "valor de e: " . var_export($e, true) . "<br>";
+    ?>
 </body>
 </html>
