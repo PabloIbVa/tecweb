@@ -111,5 +111,22 @@
 
         unset($a, $b, $c, $z);
     ?>
+    <h2>Ejercicio 5</h2>
+    <p>
+       Dar el valor de las variables $a, $b, $c al final del siguiente script:
+    </p>
+    <?php
+        //AQUI VA MI CÓDIGO PHP 
+        $a = "7 personas";
+        $b = (integer) $a;
+        $a = "9E3";
+        $c = (double) $a;
+        //Damos el valor de las variables
+        echo "Valor de a: $a <br>";
+        echo "Valor de b: $b <br>";
+        echo "Valor de c: $c <br>";
+        unset($a, $b, $c);
+    ?>
+    
 </body>
 </html>
