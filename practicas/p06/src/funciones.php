@@ -40,4 +40,17 @@
             'num' => $num
         ];
     }
+    function numeroA($num){
+        $numA = rand(1, 100);
+        while($numA%$num!=0){
+            $numA = rand(1, 100);
+        }
+        echo '<h3>El primer número entero obtenido aleatoriamente, pero que además sea múltiplo de '.$num.' es: '.$numA.'</h3>';
+    }   
+    function numeroA2($num){
+        do{
+            $numA = rand(1, 100);
+        }while($numA%$num!=0);
+        echo '<h3>El primer número entero obtenido aleatoriamente, pero que además sea múltiplo de '.$num.' es: '.$numA.'</h3>';
+    }
 ?>
