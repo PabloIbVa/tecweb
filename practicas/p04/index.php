@@ -33,9 +33,9 @@
     <h2>Ejercicio 2</h2>
     <p>Proporcionar los valores de $a, $b, $c como sigue:</p>
     <p>
-        $a = “ManejadorSQL”;
-        $b = 'MySQL';
-        $c = &$a;
+        $a = “ManejadorSQL” ;<br></br>
+        $b = 'MySQL'; <br></br>
+        $c = &amp;$a; <br></br>
     </p>
     <?php
         //AQUI VA MI CÓDIGO PHP
@@ -44,25 +44,30 @@
         $c = &$a;
         
         //a) Contenido de variables
-        echo "<p>mostramos contenido de variables</p>";
-        echo "$a, <br>";
-        echo "$b, <br>";
-        echo "$c, <br> <br>";
+        echo "<p>mostramos contenido de variables <br></br>";
+        echo "$a, <br></br>";
+        echo "$b, <br></br>";
+        echo "$c, <br></br><br></br>";
+        echo "</p>";
 
         //b) Asignaciones
+        echo "<p>";
         $a = "Php server";
         $b = &$a;
+        echo "</p>";
 
         //c) Volvemos a mostrar contenido de variables
-        echo "<p>mostramos contenido de variables</p>";
-        echo "$a, <br>";
-        echo "$b, <br>";
-        echo "$c, <br> <br>";
+        echo "<p>mostramos contenido de variables <br></br>";
+        echo "$a, <br></br>";
+        echo "$b, <br></br>";
+        echo "$c, <br></br><br></br>";
+        echo "</p>";
 
         //d) Describe en y muestra en la página obtenida qué ocurrió en el segundo bloque de asignaciones
         echo "<p> Respuesta: </p>";
-        echo "En el segundo bloque se escribe php server dado a que b y c son apuntadores de a y todos estos apuntan a un solo valor (php server)";
+        echo "<p>En el segundo bloque se escribe php server dado a que b y c son apuntadores de a y todos estos apuntan a un solo valor (php server)";
         unset($a, $b, $c);
+        echo "</p>";
     ?>
     <h2>Ejercicio 3</h2>
     <p>Muestra el contenido de cada variable inmediatamente después de cada asignación,
@@ -71,24 +76,26 @@
     </p>
     <?php
         //AQUI VA MI CÓDIGO PHP
+        echo "<p>";
         $a = "PHP5";
-        echo "Primer valor:  $a <br>";
+        echo "Primer valor:  $a <br></br>";
         $z[] = &$a;
         echo "Segundo valor: ";
         print_r($z);
         unset($z);
-        echo "<br>";
+        echo "<br></br>";
         $b = "5a version de PHP";
-        echo "Tercer valor: $b <br>";
+        echo "Tercer valor: $b <br></br>";
         @$c = $b*10;
-        echo "Cuarto valor: $c <br>";
+        echo "Cuarto valor: $c <br></br>";
         $a .= $b;
-        echo "Quinto valor: $a <br>";
+        echo "Quinto valor: $a <br></br>";
         @$b *= $c;
-        echo "Sexto valor: $b <br>";
+        echo "Sexto valor: $b <br></br>";
         $z[0] = "MySQL";
         echo "Séptimo valor: , ";
         print_r($z);
+        echo "</p>";
     ?>
     <h2>Ejercicio 4</h2>
     <p>
@@ -97,18 +104,19 @@
     </p>
     <?php
         //AQUI VA MI CÓDIGO PHP 
+        echo "<p>";
         var_dump($GLOBALS['a']);
-        echo "<br>";
+        echo "<br></br>";
         
         var_dump($GLOBALS['b']);
-        echo "<br>";
+        echo "<br></br>";
         
         var_dump($GLOBALS['c']);
-        echo "<br>";
+        echo "<br></br>";
         
         print_r($GLOBALS['z']);
-        echo "<br>";
-
+        echo "<br></br>";
+        echo "</p>";
         unset($a, $b, $c, $z);
     ?>
     <h2>Ejercicio 5</h2>
@@ -122,9 +130,11 @@
         $a = "9E3";
         $c = (double) $a;
         //Damos el valor de las variables
-        echo "Valor de a: $a <br>";
-        echo "Valor de b: $b <br>";
-        echo "Valor de c: $c <br>";
+        echo "<p>";
+        echo "Valor de a: $a <br></br>";
+        echo "Valor de b: $b <br></br>";
+        echo "Valor de c: $c <br></br>";
+        echo "</p>";
         unset($a, $b, $c);
     ?>
     <h2>Ejercicio 6</h2>
@@ -142,23 +152,25 @@
         $d = ($a OR $b);
         $e = ($a AND $c);
         $f = ($a XOR $b);
-        echo '<p>Mostramos datos:</p>';
+        echo '<p>Mostramos datos:';
         var_dump($a);
-        echo "<br>";
+        echo "<br></br>";
         var_dump($b);
-        echo "<br>";
+        echo "<br></br>";
         var_dump($c);
-        echo "<br>";
+        echo "<br></br>";
         var_dump($d);
-        echo "<br>";
+        echo "<br></br>";
         var_dump($e);
-        echo "<br>";
+        echo "<br></br>";
         var_dump($f);
-        echo "<br>";
+        echo "<br></br>";
+        echo "</p>";
 
-        echo '<p>Mostramos datos c) y e) con echo:</p>';
-        echo "valor de c: " . var_export($c, true) . "<br>";
-        echo "valor de e: " . var_export($e, true) . "<br>";
+        echo '<p>Mostramos datos c) y e) con echo:';
+        echo "valor de c: " . var_export($c, true) . "<br></br>";
+        echo "valor de e: " . var_export($e, true) . "<br></br>";
+        echo "</p>";
     ?>
     <h2>Ejercicio 7</h2>
     <p>
@@ -169,11 +181,16 @@
     </p>
     <?php
         //AQUI VA MI CÓDIGO PHP 
-        echo '<p>Mostramos datos:</p>';
-        echo "Versión de Apache: " . $_SERVER['SERVER_SOFTWARE'] . "<br>";
-        echo "Versión de PHP: " . phpversion() . "<br>";
-        echo "Sistema operativo: " . php_uname('s') . "<br>";
-        echo "Idioma del navegador: " . $_SERVER['HTTP_ACCEPT_LANGUAGE'] . "<br>";
+        echo '<p>Mostramos datos:';
+        echo "Versión de Apache: " . $_SERVER['SERVER_SOFTWARE'] . "<br></br>";
+        echo "Versión de PHP: " . phpversion() . "<br></br>";
+        echo "Sistema operativo: " . php_uname('s') . "<br></br>";
+        echo "Idioma del navegador: " . $_SERVER['HTTP_ACCEPT_LANGUAGE'] . "<br></br>";
+        echo "</p>";
     ?>
+    <p>
+        <a href="https://validator.w3.org/markup/check?uri=referer"><img
+        src="https://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1" height="31" width="88" /></a>
+    </p>
 </body>
 </html>
