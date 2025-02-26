@@ -1,0 +1,42 @@
+<!DOCTYPE html >
+<html>
+
+  <head>
+    <meta charset="utf-8" >
+    <title>Registros para Productos</title>
+    <style type="text/css">
+      ol, ul { 
+      list-style-type: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Insertacion de productos nuevos</h1>
+    <br>
+    <form id="formularioTenis" action="http://localhost/tecweb/practicas/p08/src/set_producto_v2.php" method="post">
+
+    <h2>Detalles de Producto a Insertar</h2>
+
+      <fieldset>
+        <legend></legend>
+
+        <ul>
+          <li><label for="form-name">Nombre:</label> <input type="text" name="name" id="form-name"></li>
+          <li><label for="form-marca">Marca:</label> <input type="text" name="marca" id="form-marca"></li>
+          <li><label for="form-model">Modelo:</label> <input type="text" name="model" id="form-model"></li>
+          <li><label for="form-price">Precio:</label> <input type="text" name="price" id="form-price"></li>
+          <li><label for="form-detail">Detalles</label><br><textarea name="detail" rows="4" cols="60" id="form-detail" placeholder="Escribe características del producto"></textarea></li>
+          <li><label for="form-cant">Unidades:</label> <input type="number" name="cant" min="0" id="form-cant"></li>
+          <li><label for="form-img">Imagen:</label> <input type="text" name="img" id="form-img"></li>
+        </ul>
+      </fieldset>
+
+      <p>
+        <input type="submit" value="Subir producto">
+        <input type="reset">
+      </p>
+
+    </form>
+  </body>
+</html>
