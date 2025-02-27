@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Registros para Productos</title>
+    <style type="text/css">
+        ol, ul {  /* Estilo para listas no ordenadas y ordenadas */
+            list-style-type: none;
+        }
+        .input-container { /* Estilo para agrupar etiqueta y campo de entrada */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-message { /* Estilo para mensajes de error */
+            color: red;
+            font-size: 0.9em;
+            min-width: 200px;
+        }
+    </style>
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <h1>Insertación de productos nuevos</h1>
+    <br>
+
+    <form id="formularioTenis" onsubmit="checkForm(event)">
+
+        <h2>Detalles de Producto a Insertar</h2>
+
+        <fieldset> <!-- Agrupar elementos de un formulario -->
+            <legend></legend> <!-- Título del fieldset (no queremos titulo) -->
+
+            <ul>
+                <li class="input-container">
+                    <label for="form-name">Nombre:</label>
+                    <input type="text" name="name" id="form-name">
+                    <span id="error-name" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-marca">Marca:</label>
+                    <select id="form-marca" name="marca">
+                        <option value="">Seleccione una marca</option>
+                        <option value="Logitech">Logitech</option>
+                        <option value="Yeiyan">Yeiyan</option>
+                        <option value="Corsair">Corsair</option>
+                        <option value="Razer">Razer</option>
+                        <option value="HyperX">HyperX</option>
+                        <option value="SteelSeries">SteelSeries</option>
+                    </select>
+                    <span id="error-marca" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-model">Modelo:</label>
+                    <input type="text" name="model" id="form-model">
+                    <span id="error-model" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-price">Precio:</label>
+                    <input type="text" name="price" id="form-price">
+                    <span id="error-price" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-detail">Detalles:</label>
+                    <textarea name="detail" rows="4" cols="60" id="form-detail" placeholder="Escribe características del producto"></textarea>
+                    <span id="error-detail" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-cant">Unidades:</label>
+                    <input type="number" name="cant" min="0" id="form-cant">
+                    <span id="error-cant" class="error-message"></span>
+                </li>
+
+                <li class="input-container">
+                    <label for="form-img">Imagen:</label>
+                    <input type="text" name="img" id="form-img">
+                </li>
+            </ul>
+        </fieldset>
+
+        <p>
+            <input type="submit" value="Enviar">
+            <input type="reset">
+        </p>
+
+    </form>
+</body>
+
+</html>
