@@ -1,6 +1,7 @@
 <?php
 // Conectar a la base de datos
 $link_page = isset($_POST['link']) ? $_POST['link'] : null;
+var_dump($link_page);
 $link = mysqli_connect("localhost", "root", "W0lverine", "marketzone");
 
 // Verificar conexión

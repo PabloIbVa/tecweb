@@ -119,7 +119,7 @@
 
                 var linkIn = document.createElement("input");
                 linkIn.type = 'text';
-                linkIn.name = 'origen';
+                linkIn.name = 'link';
                 linkIn.value = 1;
                 form.appendChild(linkIn);
 
@@ -154,6 +154,7 @@
             <tbody>
                 <?php foreach ($data as $reg) : ?>
                     <tr>
+
                         <th scope="row" class="row-data"><?= htmlspecialchars($reg['id']) ?></th>
                         <td class="row-data"><?= htmlspecialchars($reg['nombre']) ?></td>
                         <td class="row-data"><?= htmlspecialchars($reg['marca']) ?></td>
