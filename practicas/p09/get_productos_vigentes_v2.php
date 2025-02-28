@@ -117,6 +117,12 @@
                 imagenIn.value = img;
                 form.appendChild(imagenIn);
 
+                var linkIn = document.createElement("input");
+                linkIn.type = 'text';
+                linkIn.name = 'origen';
+                linkIn.value = 1;
+                form.appendChild(linkIn);
+
                 console.log(form);
 
                 form.method = 'POST';

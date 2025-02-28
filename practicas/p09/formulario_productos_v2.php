@@ -1,5 +1,6 @@
 <?php
 // Conectar a la base de datos
+$link_page = isset($_POST['link']) ? $_POST['link'] : null;
 $link = mysqli_connect("localhost", "root", "W0lverine", "marketzone");
 
 // Verificar conexión
@@ -32,7 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 
     if (mysqli_query($link, $sql)) {
         // Redirigir después de actualizar
-        header("Location: http://localhost/tecweb/practicas/p09/get_productos_vigentes_v2.php");
+        if ($link_page == 1) {
+            header("Location: http://localhost/tecweb/practicas/p09/get_productos_vigentes_v2.php");
+        } 
+        else {
+            header("Location: " . $link_page);
+        }
         exit();
     } else {
         echo "<script>alert('Error al actualizar: " . mysqli_error($link) . "');</script>";
@@ -70,6 +76,7 @@ mysqli_close($link);
             <legend>Actualizacion de datos:</legend>
 
             <ul>
+                <input type="hidden" name="link" value="<?= !empty($_POST['link']) ? $_POST['link'] : $_GET['link'] ?>">
                 <li><label for="form-id">ID:</label> <input type="text" name="id" id="form-id" value="<?= !empty($_POST['ids']) ? $_POST['ids'] : $_GET['ids'] ?>" readonly></li>
                 <li><label for="form-name">Nombre:</label> <input type="text" name="name" id="form-name" value="<?= !empty($_POST['nombre']) ? $_POST['nombre'] : $_GET['nombre'] ?>"></li>
                 <li><label for="form-marca">Marca:</label> <input type="text" name="marca" id="form-marca" value="<?= !empty($_POST['marca']) ? $_POST['marca'] : $_GET['marca'] ?>"></li>
