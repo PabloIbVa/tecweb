@@ -6,7 +6,9 @@ var baseJSON = {
     "marca": "NA",
     "detalles": "NA",
     "imagen": "img/default.png"
-  };
+};
+
+let edit = false;
 
 function init() {
     /**
@@ -21,6 +23,7 @@ function init() {
 //Funcion de busqueda de productos
 $(document).ready(function(){
     $('#product-result').hide();
+
     $('#search').keyup(function(e) {
         if($('#search').val()){
             let search = $('#search').val();
@@ -70,10 +73,10 @@ $(document).ready(function(){
 
     $('#product-form').submit(function(e) {
         e.preventDefault();
-    
+        let id = $('#productId').val()
         let productoJsonString = $('#description').val();
         let finalJSON;
-    
+
         try {
             finalJSON = JSON.parse(productoJsonString);
             finalJSON['nombre'] = $('#name').val();
@@ -136,8 +139,9 @@ $(document).ready(function(){
 
 
             // Envío con POST y JSON en el cuerpo
+            let url = edit === false ? 'product-add.php' : 'product-edit.php';
             $.ajax({
-                url: 'backend/product-add.php',
+                url: 'backend/' + url + '?id=' + id,
                 type: 'POST', // Usamos POST
                 contentType: 'application/json; charset=UTF-8', // Indicamos que enviamos JSON
                 data: productoJsonString, // Enviamos el JSON como cadena en el cuerpo
@@ -145,19 +149,21 @@ $(document).ready(function(){
                     console.log(response);
                     let respuesta = JSON.parse(response);
                     let template_bar = `
-                        <li style="list-style: none;">status: ${respuesta.status}</li>
-                        <li style="list-style: none;">message: ${respuesta.message}</li>
-                    `;
+                            <li style="list-style: none;">status: ${respuesta.status}</li>
+                            <li style="list-style: none;">message: ${respuesta.message}</li>
+                        `;
                     $("#product-result").addClass("card my-4 d-block");
                     $("#container").html(template_bar);
                     fetchProducts();
+                    edit = false;
                 },
                 error: function(status, error) {
                     console.error("Error en la solicitud AJAX:", status, error);
                 }
             });
     
-        } catch (error) {
+        } 
+        catch (error) {
             console.error("Error al analizar el JSON:", error);
         }
     });
@@ -168,6 +174,7 @@ $(document).ready(function(){
         url: 'backend/product-list.php',
         type: 'GET',
         success: function(response) {
+            console.log(response);
             let product = JSON.parse(response);
             let template = '';
             product.forEach(product => {
@@ -213,7 +220,22 @@ $(document).ready(function(){
     $(document).on('click','.product-item',function(){
         let element = $(this)[0].parentElement.parentElement;
         let id = $(element).attr('productId');
-        console.log(id)
+        $.post('backend/product-single.php',{id},function(response){
+            edit = true;
+            const product = JSON.parse(response);
+            $('#name').val(product.nombre);
+            var baseJSON = {
+                "precio": product.precio,
+                "unidades": product.unidades,
+                "modelo": product.modelo,
+                "marca": product.marca,
+                "detalles": product.detalles,
+                "imagen": product.imagen
+            };
+            $('#productId').val(product.id);
+            var JsonString = JSON.stringify(baseJSON,null,2);
+            document.getElementById("description").value = JsonString;
+        })
     })
 
 }
