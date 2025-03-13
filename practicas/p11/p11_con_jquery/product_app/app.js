@@ -71,101 +71,100 @@ $(document).ready(function(){
         }
     });
 
-    $('#product-form').submit(function(e) {
+    $('#product-form').submit(function (e) {
         e.preventDefault();
-        let id = $('#productId').val()
-        let productoJsonString = $('#description').val();
-        let finalJSON;
-
-        try {
-            finalJSON = JSON.parse(productoJsonString);
-            finalJSON['nombre'] = $('#name').val();
-            productoJsonString = JSON.stringify(finalJSON, null, 2);
-            // ******************************************************
-            // AQUÍ AGREGAS LAS VALIDACIONES DE LOS DATOS EN EL JSON
-            // ******************************************************
-            let errores = [];
-
-            if (!finalJSON.nombre) {
-                errores.push("No hay nombre producto");
-            }
-            if(!finalJSON.nombre.length > 100){
-                errores.push("El nombre del producto no puede ser mayor a 100 caracteres");
-            }
-            if (!finalJSON.marca) {
-                errores.push("No hay marca de producto");
-            }
-            if(!finalJSON.modelo){
-                errores.push("No hay modelo de producto");
-            }
-            if(!finalJSON.modelo.length > 25){
-                errores.push("El modelo no puede ser mayor a 25 caracteres");
-            }
-            if(!finalJSON.precio){
-                errores.push("No hay precio de producto");
-            }
-            if(!finalJSON.precio > 99.99){
-                errores.push("El precio no puede ser menor a 99.99");
-            }
-            if(finalJSON.detalles.length > 250){
-                errores.push("Los detalles no pueden ser mayor a 250 caracteres");
-            }
-            if(!finalJSON.unidades){
-                errores.push("No hay unidades de producto");
-            }
-            if(!finalJSON.unidades > 0){
-                errores.push("Las unidades no pueden ser menores a 0");
-            }
-            if(isNaN(finalJSON.precio)){
-                errores.push("El precio no es un número");
-            }
-            if(finalJSON.imagen == ""){
-                finalJSON.imagen = "img/default.jpg";
-            }
-
-            // ******************************************************
-            // --> EN CASO DE NO HABER ERRORES, SE ENVÍA EL PRODUCTO A AGREGAR
-            // ******************************************************
-
-            if (errores.length > 0) {
-                // Mostrar todos los errores en una alerta
-                alert("Errores en el formulario:\n\n" + errores.join("\n"));
-                return; // Detiene el envío si hay errores
-            }
-
-            // ******************************************************
-            // --> EN CASO DE NO HABER ERRORES, SE ENVÍA EL PRODUCTO A AGREGAR
-            // ******************************************************
-
-
-            // Envío con POST y JSON en el cuerpo
-            let url = edit === false ? 'product-add.php' : 'product-edit.php';
-            $.ajax({
-                url: 'backend/' + url + '?id=' + id,
-                type: 'POST', // Usamos POST
-                contentType: 'application/json; charset=UTF-8', // Indicamos que enviamos JSON
-                data: productoJsonString, // Enviamos el JSON como cadena en el cuerpo
-                success: function(response) {
-                    console.log(response);
-                    let respuesta = JSON.parse(response);
-                    let template_bar = `
-                            <li style="list-style: none;">status: ${respuesta.status}</li>
-                            <li style="list-style: none;">message: ${respuesta.message}</li>
-                        `;
-                    $("#product-result").addClass("card my-4 d-block");
-                    $("#container").html(template_bar);
-                    fetchProducts();
-                    edit = false;
-                },
-                error: function(status, error) {
-                    console.error("Error en la solicitud AJAX:", status, error);
-                }
-            });
     
-        } 
-        catch (error) {
-            console.error("Error al analizar el JSON:", error);
+        // Obtener el ID del producto (si está en modo edición)
+        let id = $('#productId').val();
+    
+        // Crear el objeto JSON con los valores de los campos
+        let baseJSON = {
+            "precio": parseFloat($('#price').val()), // Precio (convertido a número)
+            "unidades": parseInt($('#units').val()), // Unidades (convertido a número)
+            "modelo": $('#model').val(), // Modelo
+            "marca": $('#brand').val(), // Marca
+            "detalles": "NA", // Detalles (puedes agregar un campo para esto si es necesario)
+            "imagen": $('#image').val() // Imagen
+        };
+    
+        // Agregar el nombre al JSON
+        baseJSON['nombre'] = $('#name').val();
+    
+        // Convertir el objeto JSON a una cadena
+        let productoJsonString = JSON.stringify(baseJSON, null, 2);
+    
+        // Validaciones
+        let errores = [];
+    
+        if (!baseJSON.nombre) {
+            errores.push("No hay nombre de producto");
         }
+        if (baseJSON.nombre.length > 100) {
+            errores.push("El nombre del producto no puede ser mayor a 100 caracteres");
+        }
+        if (!baseJSON.marca) {
+            errores.push("No hay marca de producto");
+        }
+        if (!baseJSON.modelo) {
+            errores.push("No hay modelo de producto");
+        }
+        if (baseJSON.modelo.length > 25) {
+            errores.push("El modelo no puede ser mayor a 25 caracteres");
+        }
+        if (!baseJSON.precio) {
+            errores.push("No hay precio de producto");
+        }
+        if (baseJSON.precio <= 99.99) {
+            errores.push("El precio no puede ser menor a 99.99");
+        }
+        if (baseJSON.detalles.length > 250) {
+            errores.push("Los detalles no pueden ser mayor a 250 caracteres");
+        }
+        if (!baseJSON.unidades) {
+            errores.push("No hay unidades de producto");
+        }
+        if (baseJSON.unidades < 0) {
+            errores.push("Las unidades no pueden ser menores a 0");
+        }
+        if (isNaN(baseJSON.precio)) {
+            errores.push("El precio no es un número");
+        }
+        if (baseJSON.imagen == "") {
+            baseJSON.imagen = "img/default.jpg";
+        }
+    
+        // Si hay errores, mostrarlos y detener el envío
+        if (errores.length > 0) {
+            alert("Errores en el formulario:\n\n" + errores.join("\n"));
+            return;
+        }
+    
+        // Cambiar el texto del botón si es necesario
+        $('button.btn-primary').text("Agregar Producto");
+    
+        // Envío con POST y JSON en el cuerpo
+        let url = edit === false ? 'product-add.php' : 'product-edit.php';
+        $.ajax({
+            url: 'backend/' + url + '?id=' + id,
+            type: 'POST', // Usamos POST
+            contentType: 'application/json; charset=UTF-8', // Indicamos que enviamos JSON
+            data: productoJsonString, // Enviamos el JSON como cadena en el cuerpo
+            success: function (response) {
+                console.log(response);
+                let respuesta = JSON.parse(response);
+                let template_bar = `
+                    <li style="list-style: none;">status: ${respuesta.status}</li>
+                    <li style="list-style: none;">message: ${respuesta.message}</li>
+                `;
+                $("#product-result").addClass("card my-4 d-block");
+                $("#container").html(template_bar);
+                fetchProducts();
+                edit = false;
+            },
+            error: function (status, error) {
+                console.error("Error en la solicitud AJAX:", status, error);
+            }
+        });
     });
 });
 
@@ -220,6 +219,7 @@ $(document).ready(function(){
     $(document).on('click','.product-item',function(){
         let element = $(this)[0].parentElement.parentElement;
         let id = $(element).attr('productId');
+        $('button.btn-primary').text("Modificar Producto");
         $.post('backend/product-single.php',{id},function(response){
             edit = true;
             const product = JSON.parse(response);
