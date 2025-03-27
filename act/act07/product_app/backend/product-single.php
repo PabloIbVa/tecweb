@@ -1,28 +1,15 @@
 <?php
-    include_once __DIR__.'/database.php';
+header('Content-Type: application/json');
 
-    $id = $_POST['id'];
+use TECWEB\MYAPI\Products as Products;
+include_once __DIR__.'/myapi/Products.php';
 
-    $query = "SELECT * FROM productos WHERE id = $id";
-    $result = mysqli_query($conexion,$query);
-    if(!$result){
-        die('Consulta Fallida');
-    }
-
-    $json = array();
-    while($row = mysqli_fetch_array($result)){
-        $json[] = array(
-            'nombre' => $row['nombre'],
-            'unidades' => $row['unidades'],
-            'precio' => $row['precio'],
-            'modelo' => $row['modelo'],
-            'marca' => $row['marca'],
-            'detalles' => $row['detalles'],
-            'imagen' => $row['imagenes'],
-            'id' => $row['id']
-        );
-    }
-
-    $jsonstring = json_encode($json[0]);
-    echo $jsonstring;
+try {
+    $id = $_POST['id'] ?? null;
+    $prod = new Products('marketzone');
+    $prod->single($id);
+    echo $prod->getData() ?: '{}';
+} catch(Exception $e) {
+    echo json_encode(['error' => $e->getMessage()]);
+}
 ?>

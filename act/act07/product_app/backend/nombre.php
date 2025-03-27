@@ -1,41 +1,13 @@
 <?php
-// Incluir el archivo de conexión a la base de datos
-include_once __DIR__.'/database.php';
+use TECWEB\MYAPI\Products as Products; // hacemos que la clase Products esté disponible
+include_once __DIR__.'/myapi/Products.php'; //incluimos el archivo Products.php
 
-// Obtener el nombre del producto desde la solicitud GET
-$name = $_GET['name'];
+$name = $_GET['name'] ?? ''; //obtenemos el nombre del producto
+$prod = new Products('marketzone');//creamos una instancia de Products
+$prod->singleByName($name); //buscamos el producto por nombre
+$data = json_decode($prod->getData(), true); //obtenemos los datos del producto
 
-// Preparar la consulta SQL con una consulta preparada
-$sql = "SELECT * FROM productos WHERE nombre = ?";
-$stmt = $conexion->prepare($sql); // Usar $conexion en lugar de $conn
-if ($stmt) {
-    $stmt->bind_param("s", $name); // "s" indica que es un string
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Preparar la respuesta
-    $response = [];
-    if ($result->num_rows > 0) {
-        // El producto existe
-        $response['existe'] = true;
-    } else {
-        // El producto no existe
-        $response['existe'] = false;
-    }
-
-    // Devolver la respuesta en formato JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
-
-    // Cerrar la consulta preparada
-    $stmt->close();
-} else {
-    // Si hay un error en la preparación de la consulta
-    $response = ['error' => 'Error al preparar la consulta'];
-    header('Content-Type: application/json');
-    echo json_encode($response);
-}
-
-// Cerrar la conexión
-$conexion->close();
+echo json_encode([ //devolvemos los datos del producto
+    'existe' => !empty($data) //verificamos si el producto existe
+]);
 ?>
