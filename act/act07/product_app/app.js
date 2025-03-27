@@ -44,48 +44,52 @@ $(document).ready(function(){
         if($('#search').val()){
             let search = $('#search').val();
             $.ajax({
-            url: 'backend/product-search.php?search='+search,
-            type: 'GET',
-            success: function(response) {
-                let product = JSON.nparse(respose);
-                let template = '';
-                let tmeplate_dec = '';
-                product.forEach(product => {
-                    let descripcion = '';
-                    descripcion += '<li>precio: '+product.precio+'</li>';
-                    descripcion += '<li>unidades: '+product.unidades+'</li>';
-                    descripcion += '<li>modelo: '+product.modelo+'</li>';
-                    descripcion += '<li>marca: '+product.marca+'</li>';
-                    descripcion += '<li>detalles: '+product.detalles+'</li>';
+                url: 'backend/product-search.php?search=' + search,
+                type: 'GET',
+                success: function(response) {
+                    let products = response; // jQuery ya parsea el JSON
+                    let template = '';
+                    let template_dec = '';
+                    
+                    products.forEach(product => {
+                        // Lista de nombres en el cuadro blanco
+                        template += `<li>${product.nombre}</li>`;
+                        
+                        // Filas de la tabla
+                        let descripcion = `
+                            <li>Precio: ${product.precio}</li>
+                            <li>Unidades: ${product.unidades}</li>
+                            <li>Modelo: ${product.modelo}</li>
+                            <li>Marca: ${product.marca}</li>
+                            <li>Detalles: ${product.detalles}</li>
+                        `;
 
-                    tmeplate_dec += `
-                        <tr productId="${product.id}">
-                            <td>${product.id}</td>
-                            <td>${product.nombre}</td>
-                            <td><ul>${descripcion}</ul></td>
-                            <td>
-                                <button class="product-delete btn btn-danger" onclick="eliminarProducto()">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-
-                    template += `<li>${product.nombre}</li>`
-                });
-                $('#container').html(template);
-                $('#products').html(tmeplate_dec);
-                console.log(template);
-                $('#product-result').show();
-            }
-
-        })
-        }
-        else{
+                        template_dec += `
+                            <tr productId="${product.id}">
+                                <td>${product.id}</td>
+                                <td>${product.nombre}</td>
+                                <td><ul>${descripcion}</ul></td>
+                                <td>
+                                    <button class="product-delete btn btn-danger">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    $('#container').html(template);
+                    $('#products').html(template_dec);
+                    $('#product-result').show();
+                }
+            });
+        } else {
+            // Si el campo está vacío, recargar todos los productos
             fetchProducts();
             $('#product-result').hide();
         }
     });
+
 
     $('#product-form').submit(function (e) {
         e.preventDefault();
@@ -95,19 +99,21 @@ $(document).ready(function(){
     
         // Crear el objeto JSON con los valores de los campos
         let baseJSON = {
-            "precio": parseFloat($('#price').val()), // Precio (convertido a número)
-            "unidades": parseInt($('#units').val()), // Unidades (convertido a número)
-            "modelo": $('#model').val(), // Modelo
-            "marca": $('#brand').val(), // Marca
-            "detalles": "NA", // Detalles (puedes agregar un campo para esto si es necesario)
-            "imagen": $('#image').val() // Imagen
+            "precio": parseFloat($('#price').val()),
+            "unidades": parseInt($('#units').val()),
+            "modelo": $('#model').val(),
+            "marca": $('#brand').val(),
+            "detalles": $('#details').val() || "NA", // Campo detalles desde el formulario
+            "imagen": $('#image').val()
         };
     
         // Agregar el nombre al JSON
         baseJSON['nombre'] = $('#name').val();
     
-        // Convertir el objeto JSON a una cadena
-        let productoJsonString = JSON.stringify(baseJSON, null, 2);
+        // Añadir ID al JSON si está en modo edición
+        if (edit) {
+            baseJSON['id'] = id; // ✨ Cambio clave: ID incluido en el JSON
+        }
     
         // Validaciones
         let errores = [];
@@ -155,19 +161,22 @@ $(document).ready(function(){
             return;
         }
     
-        // Cambiar el texto del botón si es necesario
-        $('button.btn-primary').text("Agregar Producto");
+        // Cambiar el texto del botón
+        $('button.btn-primary').text(edit ? "Modificar Producto" : "Agregar Producto");
     
         // Envío con POST y JSON en el cuerpo
-        let url = edit === false ? 'product-add.php' : 'product-edit.php';
+        let url = edit ? 'product-edit.php' : 'product-add.php'; // URL dinámica
         $.ajax({
-            url: 'backend/' + url + '?id=' + id,
-            type: 'POST', // Usamos POST
-            contentType: 'application/json; charset=UTF-8', // Indicamos que enviamos JSON
-            data: productoJsonString, // Enviamos el JSON como cadena en el cuerpo
+            url: 'backend/' + url, // ❗ Sin parámetro ID en la URL
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(baseJSON), // Enviar todo el JSON
             success: function (response) {
-                console.log(response);
-                let respuesta = JSON.parse(response);
+                console.log("Respuesta del servidor:", response);
+                
+                // Si la respuesta es un string, parsearla; si no, usarla directamente
+                let respuesta = typeof response === 'string' ? JSON.parse(response) : response;
+                
                 let template_bar = `
                     <li style="list-style: none;">status: ${respuesta.status}</li>
                     <li style="list-style: none;">message: ${respuesta.message}</li>
@@ -176,9 +185,11 @@ $(document).ready(function(){
                 $("#container").html(template_bar);
                 fetchProducts();
                 edit = false;
+                $('#product-form')[0].reset();
             },
-            error: function (status, error) {
+            error: function (xhr, status, error) {
                 console.error("Error en la solicitud AJAX:", status, error);
+                alert("Error al procesar la solicitud. Ver consola para detalles.");
             }
         });
     });
@@ -232,27 +243,33 @@ $(document).ready(function(){
         }
     })
 
+
     $(document).on('click','.product-item',function(){
-        let element = $(this)[0].parentElement.parentElement;
+        let element = $(this).closest('tr');
         let id = $(element).attr('productId');
         $('button.btn-primary').text("Modificar Producto");
-        $.post('backend/product-single.php',{id},function(response){
-            edit = true;
-            const product = JSON.parse(response);
-
-            // Asignar los valores del producto a los campos del formulario
-            $('#name').val(product.nombre); // Nombre
-            $('#price').val(product.precio); // Precio
-            $('#units').val(product.unidades); // Unidades
-            $('#model').val(product.modelo); // Modelo
-            $('#brand').val(product.marca); // Marca
-            $('#details').val(product.detalles);
-            $('#image').val(product.imagen); // Imagen
-
-            // Asignar el ID del producto al campo oculto
-            $('#productId').val(product.id);
-            })
-    })
+        
+        $.post('backend/product-single.php',{id: id}, function(response){
+            try {
+                let product = response;
+                if (Object.keys(product).length > 0) { // Validar que no esté vacío
+                    $('#name').val(product.nombre);
+                    $('#price').val(product.precio);
+                    $('#units').val(product.unidades);
+                    $('#model').val(product.modelo);
+                    $('#brand').val(product.marca);
+                    $('#details').val(product.detalles);
+                    $('#image').val(product.imagenes);
+                    $('#productId').val(product.id);
+                    edit = true;
+                } else {
+                    alert("Producto no encontrado");
+                }
+            } catch(e) {
+                console.error("Error al parsear respuesta:", response);
+            }
+        });
+    });
     
     $("#name").on("blur", validateName);
     $("#price").on("blur", validatePrice);
