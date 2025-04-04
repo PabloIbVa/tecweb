@@ -1,0 +1,8 @@
+{
+    "autoload": {
+        "classmap": [
+            "Backend/Myapi/Functions",
+            "Backend/Myapi"
+        ]   
+    }
+}
