@@ -2,7 +2,7 @@
 header('Content-Type: application/json'); // Agregar header JSON
 
 require_once __DIR__.'/../vendor/autoload.php'; // Autoload de Composer
-use Backend\Myapi\Functions\Create as Products; // Hacemos que la clase Products esté disponible
+use Myapi\Create\Create as Products; // Hacemos que la clase Products esté disponible
 
 try {
     $producto = file_get_contents('php://input'); // Obtener el contenido del body

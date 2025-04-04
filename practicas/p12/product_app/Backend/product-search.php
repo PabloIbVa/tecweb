@@ -2,7 +2,7 @@
 header('Content-Type: application/json'); // Agregar header JSON para devolver datos en formato JSON
 
 require_once __DIR__.'/../vendor/autoload.php'; // Autoload de Composer
-use Backend\Myapi\Functions\Read as Products; // Hacemos que la clase Products esté disponible
+use Myapi\Read\Read as Products; // Hacemos que la clase Products esté disponible
 
 try {
     $search = $_GET['search'] ?? ''; //obtenemos el término de búsqueda

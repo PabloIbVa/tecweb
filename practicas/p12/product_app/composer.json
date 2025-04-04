@@ -1,8 +1,7 @@
 {
     "autoload": {
-        "classmap": [
-            "Backend/Myapi/Functions",
-            "Backend/Myapi"
-        ]   
+        "psr-4": {
+            "Myapi\\": "Backend/Myapi/"
+        }
     }
 }

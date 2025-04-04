@@ -6,18 +6,34 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit7145238ad2aa12c7007739a4d5190a00
 {
+    public static $prefixLengthsPsr4 = array (
+        'M' => 
+        array (
+            'Myapi\\' => 6,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Myapi\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Backend/Myapi',
+        ),
+    );
+
     public static $classMap = array (
-        'Backend\\Myapi\\DataBase' => __DIR__ . '/../..' . '/Backend/Myapi/DataBase.php',
-        'Backend\\Myapi\\Functions\\Create' => __DIR__ . '/../..' . '/Backend/Myapi/Functions/F-create.php',
-        'Backend\\Myapi\\Functions\\Delete' => __DIR__ . '/../..' . '/Backend/Myapi/Functions/F-delete.php',
-        'Backend\\Myapi\\Functions\\Read' => __DIR__ . '/../..' . '/Backend/Myapi/Functions/F-read.php',
-        'Backend\\Myapi\\Functions\\Update' => __DIR__ . '/../..' . '/Backend/Myapi/Functions/F-update.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Myapi\\Create\\Create' => __DIR__ . '/../..' . '/Backend/Myapi/Create/Create.php',
+        'Myapi\\DataBase' => __DIR__ . '/../..' . '/Backend/Myapi/DataBase.php',
+        'Myapi\\Delete\\Delete' => __DIR__ . '/../..' . '/Backend/Myapi/Delete/Delete.php',
+        'Myapi\\Read\\Read' => __DIR__ . '/../..' . '/Backend/Myapi/Read/Read.php',
+        'Myapi\\Update\\Update' => __DIR__ . '/../..' . '/Backend/Myapi/Update/Update.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7145238ad2aa12c7007739a4d5190a00::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7145238ad2aa12c7007739a4d5190a00::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit7145238ad2aa12c7007739a4d5190a00::$classMap;
 
         }, null, ClassLoader::class);

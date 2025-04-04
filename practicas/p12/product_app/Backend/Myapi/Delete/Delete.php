@@ -1,6 +1,6 @@
 <?php
-namespace Backend\Myapi\Functions;
-use Backend\Myapi\DataBase;
+namespace Myapi\Delete;
+use Myapi\DataBase;
 class Delete extends DataBase{
     public function __construct($db,$user='root',$pass='W0lverine'){
         $this->data = array();

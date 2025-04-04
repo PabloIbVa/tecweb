@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json'); // Establecemos el tipo de contenido a JSON
 require_once __DIR__.'/../vendor/autoload.php'; // Autoload de Composer
-use Backend\Myapi\Functions\Read as Products; // Importar la clase Products
+use Myapi\Read\Read as Products; // Importar la clase Products
 
 $name = $_GET['name'] ?? ''; //obtenemos el nombre del producto
 $prod = new Products('marketzone');//creamos una instancia de Products

@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 require_once __DIR__.'/../vendor/autoload.php';
-use Backend\Myapi\Functions\Read as Products; // Hacemos que la clase Products esté disponible
+use Myapi\Read\Read as Products; // Hacemos que la clase Products esté disponible
 
 try {
     $id = $_POST['id'] ?? null;
