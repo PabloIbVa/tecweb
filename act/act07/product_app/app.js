@@ -112,7 +112,7 @@ $(document).ready(function(){
     
         // Añadir ID al JSON si está en modo edición
         if (edit) {
-            baseJSON['id'] = id; // ✨ Cambio clave: ID incluido en el JSON
+            baseJSON['id'] = id;
         }
     
         // Validaciones
@@ -167,7 +167,7 @@ $(document).ready(function(){
         // Envío con POST y JSON en el cuerpo
         let url = edit ? 'product-edit.php' : 'product-add.php'; // URL dinámica
         $.ajax({
-            url: 'backend/' + url, // ❗ Sin parámetro ID en la URL
+            url: 'backend/' + url,
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(baseJSON), // Enviar todo el JSON
