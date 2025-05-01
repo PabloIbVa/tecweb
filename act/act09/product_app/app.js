@@ -40,7 +40,7 @@ $(document).ready(function(){
         }
     });
 
-    //Busqueda de productos
+    //Busqueda de productos) **
     $('#search').keyup(function(e) {
         if($('#search').val()) {
             let search = $('#search').val();
@@ -96,7 +96,7 @@ $(document).ready(function(){
         }
     });
 
-
+    // Envío del formulario
     $('#product-form').submit(function (e) {
         e.preventDefault();
     
@@ -248,27 +248,40 @@ function fetchProducts() {
         $("#products").html('<tr><td colspan="4">No se pudieron cargar los productos</td></tr>');
     });
 
-
-    $(document).on('click','.product-delete',function(){
-        if(confirm('Quieres eliminarlo?')){
+    //Eliminar producto **
+    $(document).on('click', '.product-delete', function() {
+        if(confirm('¿Quieres eliminarlo?')) {
             let element = $(this)[0].parentElement.parentElement;
-            let id = $(element).attr('productId')
-            $.get('backend/product-delete.php',{id:id},function(response){
-                fetchProducts();
-            })
+            let id = $(element).attr('productId');
+            
+            $.ajax({
+                url: 'http://localhost/tecweb/act/act09/product_app/Backend/product',
+                type: 'DELETE',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    fetchProducts(); // Recargar la lista después de eliminar
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al eliminar el producto:", error);
+                    alert("Ocurrió un error al eliminar el producto");
+                }
+            });
         }
-    })
+    });
 
-
-    $(document).on('click','.product-item',function(){
+    // Obtener el producto para editar
+    $(document).on('click', '.product-item', function() {
         let element = $(this).closest('tr');
         let id = $(element).attr('productId');
         $('button.btn-primary').text("Modificar Producto");
         
-        $.post('backend/product-single.php',{id: id}, function(response){
-            try {
-                let product = response;
-                if (Object.keys(product).length > 0) { // Validar que no esté vacío
+        $.ajax({
+            url: 'http://localhost/tecweb/act/act09/product_app/Backend/product/' + id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(product) {
+                if (product && Object.keys(product).length > 0) {
                     $('#name').val(product.nombre);
                     $('#price').val(product.precio);
                     $('#units').val(product.unidades);
@@ -281,12 +294,14 @@ function fetchProducts() {
                 } else {
                     alert("Producto no encontrado");
                 }
-            } catch(e) {
-                console.error("Error al parsear respuesta:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error al obtener el producto:", error);
+                alert("Ocurrió un error al cargar el producto");
             }
         });
     });
-    
+
     $("#name").on("blur", validateName);
     $("#price").on("blur", validatePrice);
     $("#units").on("blur", validateUnits);
