@@ -21,8 +21,9 @@ $(document).ready(function(){
         if ($('#name').val()) {
             let name = $('#name').val();
             $.ajax({
-                url: 'backend/nombre.php?name=' + name,
+                url: 'http://localhost/tecweb/act/act09/product_app/Backend/product/checkname/' + encodeURIComponent(name),
                 type: 'GET',
+                dataType: 'json',
                 success: function (response) {
                     console.log(response);
                     if (response.existe) {
@@ -33,13 +34,14 @@ $(document).ready(function(){
                 },
                 error: function (xhr, status, error) {
                     console.error("Error en la solicitud AJAX:", status, error);
+                    $('#name-error').text("Error al verificar el nombre").show();
                 }
             });
         } else {
             $('#name-error').text("").hide();
         }
     });
-
+    
     //Busqueda de productos) **
     $('#search').keyup(function(e) {
         if($('#search').val()) {
