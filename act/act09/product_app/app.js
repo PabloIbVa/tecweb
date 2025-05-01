@@ -13,10 +13,10 @@ function init() {
     fetchProducts();
 }
 
-//Funcion de busqueda de productos
 $(document).ready(function(){
     $('#product-result').hide();
 
+    // Validar el campo de nombre al escribir
     $('#name').keyup(function (e) {
         if ($('#name').val()) {
             let name = $('#name').val();
@@ -40,14 +40,15 @@ $(document).ready(function(){
         }
     });
 
+    //Busqueda de productos
     $('#search').keyup(function(e) {
-        if($('#search').val()){
+        if($('#search').val()) {
             let search = $('#search').val();
             $.ajax({
-                url: 'backend/product-search.php?search=' + search,
+                url: 'http://localhost/tecweb/act/act09/product_app/Backend/products/' + encodeURIComponent(search),
                 type: 'GET',
-                success: function(response) {
-                    let products = response; // jQuery ya parsea el JSON
+                dataType: 'json',
+                success: function(products) {
                     let template = '';
                     let template_dec = '';
                     
@@ -63,7 +64,7 @@ $(document).ready(function(){
                             <li>Marca: ${product.marca}</li>
                             <li>Detalles: ${product.detalles}</li>
                         `;
-
+    
                         template_dec += `
                             <tr productId="${product.id}">
                                 <td>${product.id}</td>
@@ -81,6 +82,11 @@ $(document).ready(function(){
                     $('#container').html(template);
                     $('#products').html(template_dec);
                     $('#product-result').show();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en la búsqueda:", error);
+                    $('#container').html('<li>Error en la búsqueda</li>');
+                    $('#products').html('<tr><td colspan="4">No se encontraron resultados</td></tr>');
                 }
             });
         } else {
@@ -195,27 +201,32 @@ $(document).ready(function(){
     });
 });
 
-    function fetchProducts() {
-        $.ajax({
-        url: 'backend/product-list.php',
-        type: 'GET',
-        success: function(response) {
-            console.log(response);
-            let product = JSON.parse(response);
-            let template = '';
-            product.forEach(product => {
+function fetchProducts() {
+    $.get("http://localhost/tecweb/act/act09/product_app/Backend/products", function(data) {
+        console.log("Tipo de dato recibido:", typeof data);
+        console.log("Respuesta del servidor:", data);
+        
+        try {
+            // Verifica si ya es un objeto (depende de la configuración de jQuery)
+            let productos = typeof data === 'string' ? JSON.parse(data) : data;
+            
+            let template = "";
+            
+            // Corregido: products -> productos (consistencia en el nombre)
+            productos.forEach(producto => {
                 let descripcion = `
-                    <li>precio: ${product.precio}</li>
-                    <li>unidades: ${product.unidades}</li>
-                    <li>modelo: ${product.modelo}</li>
-                    <li>marca: ${product.marca}</li>
-                    <li>detalles: ${product.detalles}</li>
+                    <li>Precio: ${producto.precio}</li>
+                    <li>Unidades: ${producto.unidades}</li>
+                    <li>Modelo: ${producto.modelo}</li>
+                    <li>Marca: ${producto.marca}</li>
+                    <li>Detalles: ${producto.detalles}</li>
                 `;
+                
                 template += `
-                    <tr productId="${product.id}">
-                        <td>${product.id}</td>
+                    <tr productId="${producto.id}">
+                        <td>${producto.id}</td>
                         <td>
-                            <a href="#" class="product-item">${product.nombre}</a>
+                            <a href="#" class="product-item">${producto.nombre}</a>
                         </td>
                         <td><ul>${descripcion}</ul></td>
                         <td>
@@ -226,12 +237,17 @@ $(document).ready(function(){
                     </tr>
                 `;
             });
-            $('#products').html(template);
-        },
-        error: function(status, error) {
-            console.error("Error en la solicitud AJAX:", status, error);
+            
+            $("#products").html(template);
+        } catch (error) {
+            console.error("Error al procesar los productos:", error);
+            $("#products").html('<tr><td colspan="4">Error al cargar los productos</td></tr>');
         }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+        $("#products").html('<tr><td colspan="4">No se pudieron cargar los productos</td></tr>');
     });
+
 
     $(document).on('click','.product-delete',function(){
         if(confirm('Quieres eliminarlo?')){
