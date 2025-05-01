@@ -7,21 +7,27 @@ class Delete extends DataBase{
         parent::__construct($db,$user,$pass);   
     }
 
-    public function delete($id){
-        $msj = array(
+    public function delete($id) {
+        $this->data = [
             'status'  => 'error',
-            'message' => 'La consulta falló'
-        );
-        if( $id ) {
-            $sql = "UPDATE productos SET eliminado=1 WHERE id = {$id}";
-            if ( $this -> conexion->query($sql) ) {
-                $this -> data['status'] =  "success";
-                $this -> data['message'] =  "Producto eliminado";
+            'message' => 'ID no proporcionado'
+        ];
+        if ($id) {
+            $sql = "UPDATE productos SET eliminado = 1 WHERE id = {$id}";
+            if ($this->conexion->query($sql)) {
+                $this->data = [
+                    'status'  => 'success',
+                    'message' => 'Producto eliminado'
+                ];
             } else {
-                $this -> data['message'] = "ERROR: No se ejecuto $sql. " . mysqli_error($this -> conexion);
+                $this->data = [
+                    'status'  => 'error',
+                    'message' => 'Error al ejecutar la consulta: ' . mysqli_error($this->conexion)
+                ];
             }
-            $this -> conexion->close();
-        } 
+            $this->conexion->close();
+        }        
+        return $this;
     }
 }
 ?>

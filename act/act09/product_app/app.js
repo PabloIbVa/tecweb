@@ -24,7 +24,7 @@ $(document).ready(function(){
                 url: 'backend/nombre.php?name=' + name,
                 type: 'GET',
                 success: function (response) {
-                    console.log(response); // Ver la respuesta en la consola
+                    console.log(response);
                     if (response.existe) {
                         $('#name-error').text("Este nombre de producto ya existe.").show();
                     } else {
@@ -109,7 +109,7 @@ $(document).ready(function(){
             "unidades": parseInt($('#units').val()),
             "modelo": $('#model').val(),
             "marca": $('#brand').val(),
-            "detalles": $('#details').val() || "NA", // Campo detalles desde el formulario
+            "detalles": $('#details').val() || "NA",
             "imagen": $('#image').val()
         };
     
@@ -121,71 +121,43 @@ $(document).ready(function(){
             baseJSON['id'] = id;
         }
     
-        // Validaciones
+        // Reduccion de lineas
         let errores = [];
+        if (!baseJSON.nombre) errores.push("No hay nombre de producto");
+        if (baseJSON.nombre.length > 100) errores.push("El nombre del producto no puede ser mayor a 100 caracteres");
+        if (!baseJSON.marca) errores.push("No hay marca de producto");
+        if (!baseJSON.modelo) errores.push("No hay modelo de producto");
+        if (baseJSON.modelo.length > 25) errores.push("El modelo no puede ser mayor a 25 caracteres");
+        if (!baseJSON.precio) errores.push("No hay precio de producto");
+        if (baseJSON.precio <= 99.99) errores.push("El precio no puede ser menor a 99.99");
+        if (baseJSON.detalles.length > 250) errores.push("Los detalles no pueden ser mayor a 250 caracteres");
+        if (!baseJSON.unidades) errores.push("No hay unidades de producto");
+        if (baseJSON.unidades < 0) errores.push("Las unidades no pueden ser menores a 0");
+        if (isNaN(baseJSON.precio)) errores.push("El precio no es un número");
+        if (baseJSON.imagen == "") baseJSON.imagen = "img/default.jpg";
     
-        if (!baseJSON.nombre) {
-            errores.push("No hay nombre de producto");
-        }
-        if (baseJSON.nombre.length > 100) {
-            errores.push("El nombre del producto no puede ser mayor a 100 caracteres");
-        }
-        if (!baseJSON.marca) {
-            errores.push("No hay marca de producto");
-        }
-        if (!baseJSON.modelo) {
-            errores.push("No hay modelo de producto");
-        }
-        if (baseJSON.modelo.length > 25) {
-            errores.push("El modelo no puede ser mayor a 25 caracteres");
-        }
-        if (!baseJSON.precio) {
-            errores.push("No hay precio de producto");
-        }
-        if (baseJSON.precio <= 99.99) {
-            errores.push("El precio no puede ser menor a 99.99");
-        }
-        if (baseJSON.detalles.length > 250) {
-            errores.push("Los detalles no pueden ser mayor a 250 caracteres");
-        }
-        if (!baseJSON.unidades) {
-            errores.push("No hay unidades de producto");
-        }
-        if (baseJSON.unidades < 0) {
-            errores.push("Las unidades no pueden ser menores a 0");
-        }
-        if (isNaN(baseJSON.precio)) {
-            errores.push("El precio no es un número");
-        }
-        if (baseJSON.imagen == "") {
-            baseJSON.imagen = "img/default.jpg";
-        }
-    
-        // Si hay errores, mostrarlos y detener el envío
         if (errores.length > 0) {
             alert("Errores en el formulario:\n\n" + errores.join("\n"));
             return;
         }
     
-        // Cambiar el texto del botón
         $('button.btn-primary').text(edit ? "Modificar Producto" : "Agregar Producto");
     
-        // Envío con POST y JSON en el cuerpo
-        let url = edit ? 'product-edit.php' : 'product-add.php'; // URL dinámica
+        let method = edit ? 'PUT' : 'POST';
+        let url = 'http://localhost/tecweb/act/act09/product_app/Backend/product';
+    
         $.ajax({
-            url: 'backend/' + url,
-            type: 'POST',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(baseJSON), // Enviar todo el JSON
+            url: url,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(baseJSON),
+            dataType: 'json',
             success: function (response) {
                 console.log("Respuesta del servidor:", response);
                 
-                // Si la respuesta es un string, parsearla; si no, usarla directamente
-                let respuesta = typeof response === 'string' ? JSON.parse(response) : response;
-                
                 let template_bar = `
-                    <li style="list-style: none;">status: ${respuesta.status}</li>
-                    <li style="list-style: none;">message: ${respuesta.message}</li>
+                    <li style="list-style: none;">status: ${response.status}</li>
+                    <li style="list-style: none;">message: ${response.message}</li>
                 `;
                 $("#product-result").addClass("card my-4 d-block");
                 $("#container").html(template_bar);
@@ -201,6 +173,7 @@ $(document).ready(function(){
     });
 });
 
+//listar productos **
 function fetchProducts() {
     $.get("http://localhost/tecweb/act/act09/product_app/Backend/products", function(data) {
         console.log("Tipo de dato recibido:", typeof data);
@@ -248,29 +221,36 @@ function fetchProducts() {
         $("#products").html('<tr><td colspan="4">No se pudieron cargar los productos</td></tr>');
     });
 
-    //Eliminar producto **
+    //se elimina el producto **
     $(document).on('click', '.product-delete', function() {
-        if(confirm('¿Quieres eliminarlo?')) {
-            let element = $(this)[0].parentElement.parentElement;
+        if (confirm('¿Quieres eliminarlo?')) {
+            let element = $(this).closest('tr');
             let id = $(element).attr('productId');
-            
+    
             $.ajax({
                 url: 'http://localhost/tecweb/act/act09/product_app/Backend/product',
                 type: 'DELETE',
                 data: { id: id },
                 dataType: 'json',
                 success: function(response) {
-                    fetchProducts(); // Recargar la lista después de eliminar
+                    if (response && response.status === 'success') {
+                        fetchProducts(); // Recarga la lista
+                        alert('Producto eliminado correctamente');
+                    } else {
+                        alert('Error al eliminar: ' + (response?.message || 'Respuesta inválida'));
+                    }
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error al eliminar el producto:", error);
-                    alert("Ocurrió un error al eliminar el producto");
+                    alert('Error en la conexión: ' + error);
+                    console.error("Detalles:", xhr.responseText);
                 }
             });
         }
     });
 
-    // Obtener el producto para editar
+    
+
+    // Obtener el producto para editar **
     $(document).on('click', '.product-item', function() {
         let element = $(this).closest('tr');
         let id = $(element).attr('productId');

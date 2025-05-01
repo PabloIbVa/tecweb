@@ -23,10 +23,7 @@ class Read extends DataBase{
     }
 
     public function search($parametro) {
-        // 1. Sanitizar el input
-        $search = $this->conexion->real_escape_string($parametro);
-    
-        // 2. Query corregida (agregar comillas al valor numérico)
+        $search = $this->conexion->real_escape_string($parametro);    
         $sql = "SELECT * FROM productos 
                 WHERE (
                     id = '{$search}' 
@@ -34,7 +31,6 @@ class Read extends DataBase{
                     OR marca LIKE '%{$search}%' 
                     OR detalles LIKE '%{$search}%'
                 ) AND eliminado = '0'"; 
-        // 3. Simplificar asignación de datos
         if ($result = $this->conexion->query($sql)) {
             $this->data = $result->fetch_all(MYSQLI_ASSOC);
             $result->free();

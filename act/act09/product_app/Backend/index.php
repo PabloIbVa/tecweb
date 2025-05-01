@@ -13,7 +13,7 @@ $app = AppFactory::create();
 $app->setBasePath('/tecweb/act/act09/product_app/Backend');
 $app->addBodyParsingMiddleware(); // Habilita manejo de JSON en cuerpo de solicitud
 
-// ✅ Obtener producto por ID
+//Obtener producto por ID
 $app->get('/product/{id}', function (Request $request, Response $response, array $args) {
     $prod = new Read('marketzone');
     $prod->single($args['id']);
@@ -22,7 +22,7 @@ $app->get('/product/{id}', function (Request $request, Response $response, array
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ✅ Verificar si nombre de producto ya existe
+//Verificar si nombre de producto ya existe
 $app->get('/product/checkname/{name}', function (Request $request, Response $response, array $args) {
     $prod = new Read('marketzone');
     $prod->singleByName($args['name']);
@@ -32,22 +32,15 @@ $app->get('/product/checkname/{name}', function (Request $request, Response $res
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ✅ Obtener lista de productos
+//Obtener lista de productos
 $app->get('/products', function (Request $request, Response $response) {
-    try {
-        $prod = new Read('marketzone');
-        $prod->list();
-        $response->getBody()->write($prod->getData());
-        return $response->withHeader('Content-Type', 'application/json');
-    } catch (\Throwable $e) {
-        $error = ['error' => $e->getMessage()];
-        $response->getBody()->write(json_encode($error));
-        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
-    }
+    $prod = new Read('marketzone');
+    $prod->list();
+    $response->getBody()->write($prod->getData());
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
-
-// ✅ Buscar productos
+//Buscar productos
 $app->get('/products/{search}', function (Request $request, Response $response, array $args) {
     $prod = new Read('marketzone');
     $prod->search($args['search']);
@@ -55,7 +48,7 @@ $app->get('/products/{search}', function (Request $request, Response $response, 
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ✅ Agregar producto
+//Agregar producto
 $app->post('/product', function (Request $request, Response $response) {
     $data = json_encode($request->getParsedBody());
     $prod = new Create('marketzone');
@@ -64,7 +57,7 @@ $app->post('/product', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ✅ Editar producto
+//Editar producto
 $app->put('/product', function (Request $request, Response $response) {
     $data = json_encode($request->getParsedBody());
     $prod = new Update('marketzone');
@@ -73,9 +66,10 @@ $app->put('/product', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ✅ Eliminar producto (vía query param ?id=)
+//Eliminar producto
 $app->delete('/product', function (Request $request, Response $response) {
-    $id = $request->getQueryParams()['id'] ?? null;
+    $data = $request->getParsedBody();
+    $id = $data['id'] ?? null;
     $prod = new Delete('marketzone');
     $prod->delete($id);
     $response->getBody()->write($prod->getData());
